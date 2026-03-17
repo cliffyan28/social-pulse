@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Rumor Signal Report",
+  "title": "Social Pulse Signal Report",
   "type": "object",
   "required": ["query", "language", "signal_score", "signal_level", "scan_time"],
   "properties": {
@@ -73,7 +73,7 @@
         "properties": {
           "platform": {
             "type": "string",
-            "enum": ["x", "reddit", "tiktok", "weibo", "xiaohongshu", "douyin"]
+            "enum": ["x", "reddit", "tiktok", "weibo", "xiaohongshu", "douyin", "youtube", "bilibili", "wechat"]
           },
           "hits": { "type": "integer" },
           "independent_sources": { "type": "integer" },
@@ -95,7 +95,7 @@
         "properties": {
           "platform": {
             "type": "string",
-            "enum": ["x", "reddit", "tiktok", "weibo", "xiaohongshu", "douyin"]
+            "enum": ["x", "reddit", "tiktok", "weibo", "xiaohongshu", "douyin", "youtube", "bilibili", "wechat"]
           },
           "author": { "type": "string" },
           "author_type": {

@@ -1,6 +1,6 @@
 # social-pulse
 
-**Open-source social media signal detection for OpenClaw — scan 6 platforms for rumor signals and assess their strength. Zero config.**
+**Open-source social media signal detection for OpenClaw — scan 9 platforms for rumor signals and assess their strength. Zero config.**
 
 ## Install
 
@@ -12,7 +12,7 @@ That's it. No Python, no pip install, no API keys required beyond what you alrea
 
 ## What it does
 
-- Scan 6 social media platforms (X, Reddit, TikTok, Xiaohongshu, Douyin, Weibo) for rumor signals
+- Scan 9 social media platforms (X, Reddit, TikTok, Xiaohongshu, Douyin, Weibo, YouTube, Bilibili, WeChat Articles) for rumor signals
 - Assess signal strength with a 0-100 score based on volume, source independence, credibility, and recency
 - Detect single-source propagation vs multi-source independent reporting
 - Cross-platform verification — check if a topic is discussed independently on multiple platforms
@@ -46,7 +46,7 @@ What are people saying about the Dubai floods?
 The skill runs a 4-stage pipeline:
 
 1. **Input Parsing** — Extract keywords, detect language, generate bilingual search terms
-2. **Multi-Platform Collection** — Search 6 platforms via Agent Reach (direct) or Brave Search (fallback)
+2. **Multi-Platform Collection** — Search 9 platforms via Agent Reach (direct) or Brave Search (fallback)
 3. **Signal Analysis** — Assess volume, source independence, credibility, and recency
 4. **Report Generation** — Structured signal report with score, platform breakdown, and representative posts
 
@@ -82,6 +82,9 @@ If you have [Agent Reach](https://github.com/anthropics/agent-reach) installed, 
 | Xiaohongshu | Supported | Docker + Cookie |
 | Douyin | Supported | No login needed |
 | Weibo | Not supported | Always uses Brave Search |
+| YouTube | Supported | No login needed (yt-dlp) |
+| Bilibili | Supported | No login needed (yt-dlp) |
+| WeChat Articles | Supported | No login needed |
 
 ### Brave Search (fallback)
 
@@ -126,7 +129,7 @@ Every social-pulse report includes a suggestion to use fact-checker for deep ver
 ## FAQ
 
 ### What is social-pulse?
-An open-source social media signal detection skill for OpenClaw that scans 6 platforms and assesses how widely a rumor or topic is being discussed.
+An open-source social media signal detection skill for OpenClaw that scans 9 platforms and assesses how widely a rumor or topic is being discussed.
 
 ### Does it tell me if a rumor is true or false?
 No. social-pulse only measures signal strength — how much discussion exists. For truth verification, use fact-checker.

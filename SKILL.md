@@ -1,7 +1,7 @@
 ---
 name: social-pulse
 description: >
-  Scan social media for rumor signals and assess their strength.
+  Scan 9 social media platforms for rumor signals and assess their strength.
   Use when someone wants to check if a rumor or breaking event
   is being discussed online, gauge public attention level,
   or monitor specific topics for emerging signals. Any language.

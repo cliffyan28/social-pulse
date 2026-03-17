@@ -113,6 +113,54 @@ WebSearch "site:weibo.com {keywords}"
 - Mark results with `data_source: "brave_search_fallback"`
 - Note: Weibo is critical for Chinese-language rumor tracking; Brave Search coverage may lag
 
+#### Platform: YouTube
+
+**Layer 1 (Agent Reach available):**
+```bash
+xreach youtube-search "{keywords}" --limit 20 --json
+```
+- Uses yt-dlp under the hood; extracts video titles, descriptions, and comment snippets
+- No API key required
+
+**Layer 2 (Brave Search fallback):**
+```
+WebSearch "site:youtube.com {keywords}"
+```
+- Mark results with `data_source: "brave_search_fallback"`
+- Note: only video titles/descriptions are indexed; comments are not available via search fallback
+
+#### Platform: Bilibili
+
+**Layer 1 (Agent Reach available):**
+```bash
+xreach bilibili-search "{keywords}" --limit 20 --json
+```
+- Uses yt-dlp; extracts video titles, descriptions, and danmaku/comment data
+- No login required
+
+**Layer 2 (Brave Search fallback):**
+```
+WebSearch "site:bilibili.com {keywords}"
+```
+- Mark results with `data_source: "brave_search_fallback"`
+- Note: Bilibili is a major Chinese-language video platform; danmaku (弹幕) and comments are not indexed by search engines
+
+#### Platform: WeChat Articles (微信公众号)
+
+**Layer 1 (Agent Reach available):**
+```bash
+xreach wechat-search "{keywords}" --limit 20 --json
+```
+- Searches public WeChat articles (公众号文章)
+- If xreach fails → fall back to Layer 2
+
+**Layer 2 (Brave Search fallback):**
+```
+WebSearch "site:mp.weixin.qq.com {keywords}"
+```
+- Mark results with `data_source: "brave_search_fallback"`
+- Note: WeChat articles are critical for Chinese-language opinion pieces and official statements; search engine indexing coverage is limited
+
 ---
 
 ### Step 3: Time-aware query construction
@@ -157,7 +205,7 @@ This does NOT replace the hard filter in Stage 2 — search engine date biasing 
 Log: `[Stage 1] Round 1 — searching with original keywords: "{keywords_original}" (time-qualified: {yes/no})`
 Log: `[Stage 1] Round 2 — searching with English keywords: "{keywords_english}" (time-qualified: {yes/no})`
 
-**Important**: For Chinese-language platforms (Xiaohongshu, Douyin, Weibo), the English keyword round may yield few results — this is expected. Still execute it for X, Reddit, and TikTok where English content is prevalent.
+**Important**: For Chinese-language platforms (Xiaohongshu, Douyin, Weibo, Bilibili, WeChat), the English keyword round may yield few results — this is expected. Still execute it for X, Reddit, TikTok, and YouTube where English content is prevalent.
 
 ---
 
@@ -167,7 +215,7 @@ Normalize all collected posts into this standard format, regardless of source pl
 
 ```json
 {
-  "platform": "x|reddit|tiktok|weibo|xiaohongshu|douyin",
+  "platform": "x|reddit|tiktok|weibo|xiaohongshu|douyin|youtube|bilibili|wechat",
   "author": "username or ID",
   "author_followers": 1200,
   "author_verified": false,
@@ -187,13 +235,13 @@ Normalize all collected posts into this standard format, regardless of source pl
 
 **Field mapping by platform:**
 
-| Field | X (Twitter) | Reddit | TikTok | Xiaohongshu | Douyin | Weibo |
-|-------|-------------|--------|--------|-------------|--------|-------|
-| author | screen_name | author | author | user.nickname | author.nickname | user.screen_name |
-| author_followers | followers_count | null (not in API) | null | user.fans | author.follower_count | followers_count |
-| likes | favorite_count | score (upvotes) | digg_count | liked_count | statistics.digg_count | attitudes_count |
-| reposts | retweet_count | null | share_count | shared_count | statistics.share_count | reposts_count |
-| comments | reply_count | num_comments | comment_count | comments_count | statistics.comment_count | comments_count |
+| Field | X (Twitter) | Reddit | TikTok | Xiaohongshu | Douyin | Weibo | YouTube | Bilibili | WeChat |
+|-------|-------------|--------|--------|-------------|--------|-------|---------|----------|--------|
+| author | screen_name | author | author | user.nickname | author.nickname | user.screen_name | channel_name | uploader | author (公众号名) |
+| author_followers | followers_count | null | null | user.fans | author.follower_count | followers_count | subscriber_count | follower_count | null |
+| likes | favorite_count | score (upvotes) | digg_count | liked_count | statistics.digg_count | attitudes_count | like_count | like | read_count |
+| reposts | retweet_count | null | share_count | shared_count | statistics.share_count | reposts_count | null | share | null |
+| comments | reply_count | num_comments | comment_count | comments_count | statistics.comment_count | comments_count | comment_count | reply | null |
 
 **Notes on Brave Search fallback data:**
 - `author_followers`: set to `null`
