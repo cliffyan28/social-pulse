@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Rumor Signal Report",
+  "type": "object",
+  "required": ["query", "language", "signal_score", "signal_level", "scan_time"],
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "User's original query text"
+    },
+    "language": {
+      "type": "string",
+      "description": "ISO 639-1 language code of the detected input language"
+    },
+    "scan_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp of when the scan was performed"
+    },
+    "platforms_scanned": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of platforms that were scanned"
+    },
+    "signal_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Composite signal strength score"
+    },
+    "signal_level": {
+      "type": "string",
+      "enum": ["strong", "moderate_strong", "moderate", "weak", "none"],
+      "description": "Signal strength category"
+    },
+    "sub_scores": {
+      "type": "object",
+      "description": "Individual dimension scores that compose the signal score",
+      "properties": {
+        "volume": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "independence": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "credibility": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "recency": { "type": "integer", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "total_hits": {
+      "type": "integer",
+      "description": "Total number of posts collected across all platforms"
+    },
+    "independent_sources": {
+      "type": "integer",
+      "description": "Number of unique authors/sources"
+    },
+    "earliest_appearance": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Timestamp of the earliest related post found"
+    },
+    "cross_platform_verified": {
+      "type": "boolean",
+      "description": "Whether the topic was found on 2+ different platforms"
+    },
+    "single_source_propagation": {
+      "type": "boolean",
+      "description": "Whether >80% of posts trace to a single origin"
+    },
+    "platform_breakdown": {
+      "type": "array",
+      "description": "Per-platform statistics",
+      "items": {
+        "type": "object",
+        "required": ["platform", "hits"],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": ["x", "reddit", "tiktok", "weibo", "xiaohongshu", "douyin"]
+          },
+          "hits": { "type": "integer" },
+          "independent_sources": { "type": "integer" },
+          "total_engagement": { "type": ["integer", "null"] },
+          "data_source": {
+            "type": "string",
+            "enum": ["agent_reach", "brave_search_fallback"],
+            "description": "How data was collected for this platform"
+          }
+        }
+      }
+    },
+    "representative_posts": {
+      "type": "array",
+      "maxItems": 5,
+      "description": "Top representative posts selected for the report",
+      "items": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": ["x", "reddit", "tiktok", "weibo", "xiaohongshu", "douyin"]
+          },
+          "author": { "type": "string" },
+          "author_type": {
+            "type": "string",
+            "enum": [
+              "verified_media",
+              "verified_journalist",
+              "kol",
+              "regular",
+              "new_account",
+              "unknown"
+            ]
+          },
+          "author_followers": { "type": ["integer", "null"] },
+          "content_snippet": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "engagement": {
+            "type": "object",
+            "properties": {
+              "likes": { "type": ["integer", "null"] },
+              "reposts": { "type": ["integer", "null"] },
+              "comments": { "type": ["integer", "null"] }
+            }
+          },
+          "timestamp": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "url": {
+            "type": ["string", "null"],
+            "format": "uri"
+          },
+          "data_source": {
+            "type": "string",
+            "enum": ["agent_reach", "brave_search_fallback"]
+          }
+        }
+      }
+    },
+    "data_limitations": {
+      "type": "array",
+      "description": "Platforms where data was collected via Brave Search fallback (reduced coverage)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "platform": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "disclaimer": {
+      "type": "string",
+      "description": "Fixed disclaimer that this report assesses signal strength only, not truthfulness"
+    },
+    "fact_checker_suggestion": {
+      "type": "string",
+      "description": "Suggested command to invoke fact-checker for deep verification"
+    }
+  }
+}
